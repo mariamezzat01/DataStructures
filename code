@@ -1,9 +1,11 @@
 #ifndef MY_TREE_H
 #define MY_TREE_H
 #include <iostream>
+#include <cassert>
 #include <vector>
 #include <stack>
 #include "queue"
+#include<algorithm>
 using namespace std;
 template <class T>
 class MyTree {
@@ -16,22 +18,47 @@ private:
         node* right;
     };
 
-    node* root;
+
 
 public:
+    node* root;
+    int size;
+
     MyTree() {
         root = NULL;
+        size = NULL;
     }
 
     MyTree(vector<T> elements) {
-        for (int i = 0; i < elements.size(); i++)
-            insert(elements);
+        root = NULL;
+        sort(elements.begin(), elements.end());
+        root = insertvector(elements, 0, elements.size() - 1);
+    }
+
+    node* insertvector(vector<T> v, int start, int end) {
+        {
+            if (start > end)
+                return NULL;
+            int mid = (start + end) / 2;
+            node* p = newnode(v[mid]);
+            p->left = insertvector(v, start, mid - 1);
+            p->right = insertvector(v, mid + 1, end);
+            return p;
+        }
+
+    }
+
+    node* newnode(T key) {
+        node* t = new node();
+        t->data = key;
+        t->left = t->right = NULL;
+        return t;
+
     }
 
     bool search(T key) {
         node* p = root;
-        if (p == NULL)
-            return;
+        if (p == NULL) return false;
 
         while (p != NULL) {
             if (key == p->item)
@@ -45,79 +72,67 @@ public:
         return false;
     }
 
-    void insert(T key) {
+    void insert(T item) {
+        node* current;
+        node* trailCurrent;
+        node* newNode;
 
+        newNode = new node;
+        assert(newNode != NULL);
+        newNode->item = item;
+        newNode->right = NULL;
+        newNode->left = NULL;
 
-        node* newnode = newNode(key);
-
-        node* x = root;
-
-        node* y = NULL;
-
-        while (x != NULL) {
-            y = x;
-            if (key < x->item)
-                x = x->left;
-            else if (key > x->item)
-                x = x->right;
-            else
-                return;
+        if (root == NULL) {
+            root = newNode;
+            size++;
         }
+        else {
 
+            current = root;
+            while (current != NULL) {
+                trailCurrent = current;
 
-        if (root == NULL)
-        {
-            root = newnode;
-        }
-
-
-        else if (key < y->item)
-            y->left = newnode;
-
-
-        else
-            y->right = newnode;
-
-
-        Node* newNode(T data)
-        {
-            node* temp = new Node;
-
-            temp->item = data;
-
-            temp->left = NULL;
-            temp->right = NULL;
-
-            return temp;
+                if (item > current->item) {
+                    current = current->right;
+                }
+                else current = current->left;
+            }
+            if (item > trailCurrent->item) {
+                trailCurrent->right = newNode;
+                size++;
+            }
+            else {
+                trailCurrent->left = newNode;
+                size++;
+            }
         }
     }
+
     void inorder_rec(node* p) {
-        p = root;
         if (p != NULL)
         {
             inorder_rec(p->left);
-            cout << p->info << " ";
+            cout << p->item << " ";
             inorder_rec(p->right);
         }
     }
 
     void preorder_rec(node* p) {
-        p = root;
         if (p != NULL)
         {
-            cout << p->info << " ";
+            cout << p->item << " ";
             preorder_rec(p->left);
             preorder_rec(p->right);
         }
     }
 
     void postorder_rec(node* p) {
-        p = root;
         if (p != NULL)
         {
             postorder_rec(p->left);
             postorder_rec(p->right);
-            cout << p->info << " ";
+            cout << p->item << " ";
         }
     }
 
@@ -142,30 +157,30 @@ public:
         }
     }
 
-    void preorder_it(node* p) {
-        {
-            p = root;
-            if (p == NULL)
-                return;
+    void preorder_it()
+    {
+        node* p = root;
+        if (p == NULL)
+            return;
 
-            stack<node*> nodeStack;
-            nodeStack.push(p);
+        stack<node*> nodeStack;
+        nodeStack.push(p);
 
-            while (nodeStack.empty() == false) {
-                struct node* node = nodeStack.top();
-                cout << node->item << " ";
-                nodeStack.pop();
+        while (nodeStack.empty() == false) {
+            struct node* node = nodeStack.top();
+            cout << node->item << " ";
+            nodeStack.pop();
 
-                
-                if (node->right)
-                    nodeStack.push(node->right);
-                if (node->left)
-                    nodeStack.push(node->left);
-            }
+
+            if (node->right)
+                nodeStack.push(node->right);
+            if (node->left)
+                nodeStack.push(node->left);
+        }
     }
 
-    void postorder_it(node*p) {
-        p = root;
+    void postorder_it() {
+        node* p = root;
         if (p == NULL)
             return;
         stack<node*> s1, s2;
@@ -174,7 +189,7 @@ public:
         node* node;
 
         while (!s1.empty()) {
-            
+
             node = s1.top();
             s1.pop();
             s2.push(node);
@@ -190,15 +205,15 @@ public:
             s2.pop();
             cout << node->item << " ";
         }
-    
-    
+
+
     }
 
-    void breadth_traversal(node* p) {
-        p = root;
+    void breadth_traversal() {
+        node* p = root;
         if (p == NULL)
             return;
-        queue<T> q;
+        queue<node*> q;
         q.push(p);
         while (q.empty() == false) {
             node* temp = q.front();
@@ -211,15 +226,16 @@ public:
             if (temp->right != NULL)
                 q.push(temp->right);
         }
-    
+
     }
 
-    int size(node* p) {
-        p = root;
+    int Size() {
+        node* p = root;
         if (p == NULL)
             return 0;
         return 1 + size(p->left) + size(p->right);
     }
 };
 
-#endif
+
+#endif //MARIAM_EZZAT_MY_TREE_H
