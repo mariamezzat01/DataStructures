@@ -1,0 +1,3 @@
+D:/Advanced projects/trial/cmake-build-debug/CMakeFiles/trial.dir
+D:/Advanced projects/trial/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Advanced projects/trial/cmake-build-debug/CMakeFiles/rebuild_cache.dir

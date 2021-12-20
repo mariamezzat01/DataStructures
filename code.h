@@ -24,12 +24,13 @@ public:
     node* root;
     int size;
 
-    MyTree() {
+    MyTree(int SSize) {
         root = NULL;
-        size = NULL;
+        size = SSize ;
     }
 
-    MyTree(vector<T> elements) {
+    MyTree(int SSize,vector<T> elements) {
+        size = SSize ;
         root = NULL;
         sort(elements.begin(), elements.end());
         root = insertvector(elements, 0, elements.size() - 1);
@@ -50,7 +51,7 @@ public:
 
     node* newnode(T key) {
         node* t = new node();
-        t->data = key;
+        t->item = key;
         t->left = NULL;
             t->right = NULL;
         return t;
@@ -73,14 +74,14 @@ public:
         return false;
     }
 
-    void insert(T item) {
+    void insert(T key) {
         node* current;
         node* trailCurrent;
         node* newNode;
 
         newNode = new node;
         assert(newNode != NULL);
-        newNode->item = item;
+        newNode->item = key;
         newNode->right = NULL;
         newNode->left = NULL;
 
@@ -94,12 +95,12 @@ public:
             while (current != NULL) {
                 trailCurrent = current;
 
-                if (item > current->item) {
+                if (key > current->item) {
                     current = current->right;
                 }
                 else current = current->left;
             }
-            if (item > trailCurrent->item) {
+            if (key > trailCurrent->item) {
                 trailCurrent->right = newNode;
                 size++;
             }
@@ -111,33 +112,33 @@ public:
     }
 
     void inorder_rec() { inorder(root); }
-    void inorder(Node* node)
+    void inorder(node* node)
     {
         if (node == NULL)
             return;
 
         inorder(node->left);
-        cout << node->data << " ";
+        cout << node->item << " ";
         inorder(node->right);
     }
 
 
     void preorder_rec() { preorder(root); }
-    void preorder(Node* node) {
+    void preorder(node* node) {
         if (node == NULL)
             return;
-        cout << node->data << " ";
+        cout << node->item << " ";
         preorder(node->left);
         preorder(node->right);
     }
 
     void postorder_rec() { postorder_rec(root); }
-    void postorder_rec(Node* node) {
+    void postorder_rec(node* node) {
         if (node == NULL)
             return;
         postorder_rec(node->left);
         postorder_rec(node->right);
-        cout << node->data << " ";
+        cout << node->item << " ";
     }
 
     void inorder_it() {
@@ -233,11 +234,8 @@ public:
 
     }
 
-    int size() {
-        node* p = root;
-        if (p == NULL)
-            return 0;
-        return 1 + size(p->left) + size(p->right);
+    int Size() {
+        return size;
     }
 };
 
