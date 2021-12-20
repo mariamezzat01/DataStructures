@@ -51,7 +51,8 @@ public:
     node* newnode(T key) {
         node* t = new node();
         t->data = key;
-        t->left = t->right = NULL;
+        t->left = NULL;
+            t->right = NULL;
         return t;
 
     }
@@ -109,31 +110,34 @@ public:
         }
     }
 
-    void inorder_rec(node* p) {
-        if (p != NULL)
-        {
-            inorder_rec(p->left);
-            cout << p->item << " ";
-            inorder_rec(p->right);
-        }
+    void inorder_rec() { inorder(root); }
+    void inorder(Node* node)
+    {
+        if (node == NULL)
+            return;
+
+        inorder(node->left);
+        cout << node->data << " ";
+        inorder(node->right);
     }
 
-    void preorder_rec(node* p) {
-        if (p != NULL)
-        {
-            cout << p->item << " ";
-            preorder_rec(p->left);
-            preorder_rec(p->right);
-        }
+
+    void preorder_rec() { preorder(root); }
+    void preorder(Node* node) {
+        if (node == NULL)
+            return;
+        cout << node->data << " ";
+        preorder(node->left);
+        preorder(node->right);
     }
 
-    void postorder_rec(node* p) {
-        if (p != NULL)
-        {
-            postorder_rec(p->left);
-            postorder_rec(p->right);
-            cout << p->item << " ";
-        }
+    void postorder_rec() { postorder_rec(root); }
+    void postorder_rec(Node* node) {
+        if (node == NULL)
+            return;
+        postorder_rec(node->left);
+        postorder_rec(node->right);
+        cout << node->data << " ";
     }
 
     void inorder_it() {
@@ -229,7 +233,7 @@ public:
 
     }
 
-    int Size() {
+    int size() {
         node* p = root;
         if (p == NULL)
             return 0;
@@ -238,4 +242,4 @@ public:
 };
 
 
-#endif //MARIAM_EZZAT_MY_TREE_H
+#endif 
